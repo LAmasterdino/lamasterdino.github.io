@@ -36,6 +36,188 @@
         <p>
             Hier kannst du beliebige Inhalte einfügen.
         </p>
+
+        <div id="github-projects">
+  <h2>Meine GitHub-Projekte</h2>
+  <p id="github-status">Lade Repositories ...</p>
+  <div id="github-repo-list" class="github-grid"></div>
+</div>
+
+<style>
+  #github-projects {
+    font-family: Arial, sans-serif;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  #github-projects h2 {
+    margin-bottom: 10px;
+  }
+
+  .github-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .repo-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 18px;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .repo-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  }
+
+  .repo-card h3 {
+    margin: 0 0 8px;
+    font-size: 1.1rem;
+  }
+
+  .repo-card p {
+    margin: 0 0 14px;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  .repo-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .repo-links a {
+    display: inline-block;
+    text-decoration: none;
+    background: #111827;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 0.92rem;
+  }
+
+  .repo-links a.secondary {
+    background: #e5e7eb;
+    color: #111827;
+  }
+
+  .repo-links a:hover {
+    opacity: 0.9;
+  }
+
+  .muted {
+    color: #6b7280;
+    font-size: 0.95rem;
+  }
+</style>
+
+<script>
+  (async function () {
+    const username = "LAmasterdino"; // <-- hier deinen GitHub-Namen eintragen
+    const statusEl = document.getElementById("github-status");
+    const listEl = document.getElementById("github-repo-list");
+
+    function getPagesUrl(repo) {
+      // Bevorzugt die im Repo hinterlegte Homepage
+      if (repo.homepage && repo.homepage.trim()) return repo.homepage.trim();
+
+      // Fallback auf die Standard-URL für Project Pages
+      // Hinweis: Das funktioniert nur, wenn GitHub Pages im Repo aktiviert ist.
+      return `https://${username}.github.io/${repo.name}/`;
+    }
+
+    async function fetchAllRepos() {
+      let allRepos = [];
+      let page = 1;
+      const perPage = 100;
+
+      while (true) {
+        const url = `https://api.github.com/users/${username}/repos?per_page=${perPage}&page=${page}&sort=updated`;
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error(`GitHub API Fehler: ${response.status} ${response.statusText}`);
+        }
+
+        const repos = await response.json();
+        if (!Array.isArray(repos) || repos.length === 0) break;
+
+        allRepos = allRepos.concat(repos);
+        if (repos.length < perPage) break;
+        page++;
+      }
+
+      return allRepos;
+    }
+
+    function renderRepo(repo) {
+      const card = document.createElement("article");
+      card.className = "repo-card";
+
+      const title = document.createElement("h3");
+      title.textContent = repo.name;
+
+      const desc = document.createElement("p");
+      desc.textContent = repo.description || "Keine Beschreibung vorhanden.";
+
+      const links = document.createElement("div");
+      links.className = "repo-links";
+
+      const pagesUrl = getPagesUrl(repo);
+
+      const pagesLink = document.createElement("a");
+      pagesLink.href = pagesUrl;
+      pagesLink.target = "_blank";
+      pagesLink.rel = "noopener noreferrer";
+      pagesLink.textContent = "GitHub Pages";
+
+      const repoLink = document.createElement("a");
+      repoLink.href = repo.html_url;
+      repoLink.target = "_blank";
+      repoLink.rel = "noopener noreferrer";
+      repoLink.textContent = "GitHub Repo";
+      repoLink.className = "secondary";
+
+      links.appendChild(pagesLink);
+      links.appendChild(repoLink);
+
+      card.appendChild(title);
+      card.appendChild(desc);
+      card.appendChild(links);
+
+      return card;
+    }
+
+    try {
+      const repos = await fetchAllRepos();
+
+      if (!repos.length) {
+        statusEl.textContent = "Keine Repositories gefunden.";
+        return;
+      }
+
+      // Optional: Forks und Archivierte ausblenden
+      const visibleRepos = repos.filter(repo => !repo.fork && !repo.archived);
+
+      statusEl.textContent = `${visibleRepos.length} Repositories gefunden.`;
+
+      visibleRepos.forEach(repo => {
+        listEl.appendChild(renderRepo(repo));
+      });
+    } catch (error) {
+      console.error(error);
+      statusEl.textContent = "Fehler beim Laden der Repositories.";
+      listEl.innerHTML = `<p class="muted">Bitte prüfe den GitHub-Namen oder die API-Zugänglichkeit.</p>`;
+    }
+  })();
+          </script>
     </section>
 
     <section class="module">
