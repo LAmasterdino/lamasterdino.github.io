@@ -1,0 +1,144 @@
+<!DOCTYPE html><html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ – Meine Webseite</title><link rel="stylesheet" href="css/style.css"><style>
+
+/* FAQ Erweiterungen */
+
+.faq-wrapper{
+    padding: 50px 0;
+}
+
+.faq-title{
+    text-align:center;
+    margin-bottom:40px;
+}
+
+.faq-item{
+    background:white;
+    border-radius:16px;
+    overflow:hidden;
+    margin-bottom:18px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.08);
+}
+
+.faq-question{
+    width:100%;
+    background:none;
+    border:none;
+    padding:24px;
+    text-align:left;
+
+    font-size:1.05rem;
+    font-weight:600;
+
+    cursor:pointer;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.faq-question:hover{
+    background:#f8fafc;
+}
+
+.faq-icon{
+    transition:0.3s;
+}
+
+.faq-item.active .faq-icon{
+    transform:rotate(180deg);
+}
+
+.faq-answer{
+    max-height:0;
+
+    overflow:hidden;
+
+    transition:
+        max-height 0.35s ease,
+        padding 0.35s ease;
+
+    padding:0 24px;
+}
+
+.faq-item.active .faq-answer{
+    max-height:250px;
+    padding:0 24px 24px;
+}
+
+@media (max-width:768px){
+
+.faq-question{
+    padding:18px;
+}
+
+}
+
+</style></head><body><header class="header">
+<div class="container header-content"><img
+src="https://DEINE-LOGO-URL.DE/logo.png"
+alt="Logo"
+class="logo"
+
+«»
+
+<h1>Meine Webseite</h1></div>
+</header><main class="container faq-wrapper"><div class="faq-title">
+<h2>Häufige Fragen</h2>
+<p>Hier findest du Antworten auf die wichtigsten Fragen.</p>
+</div><!-- FAQ MODUL --><div class="faq-item">
+<button class="faq-question">Wie funktioniert die Webseite?
+
+<span class="faq-icon">▼</span>
+
+</button><div class="faq-answer">
+<p>
+Hier erklärst du kurz die Funktion deiner Webseite.
+</p>
+</div>
+</div><!-- FAQ MODUL --><div class="faq-item">
+<button class="faq-question">Ist die Nutzung kostenlos?
+
+<span class="faq-icon">▼</span>
+
+</button><div class="faq-answer">
+<p>
+Ja, die Nutzung ist kostenlos.
+</p>
+</div>
+</div><!-- FAQ MODUL --><div class="faq-item">
+<button class="faq-question">Wie kann ich Kontakt aufnehmen?
+
+<span class="faq-icon">▼</span>
+
+</button><div class="faq-answer">
+<p>
+Nutze das Kontaktformular oder die Angaben im Impressum.
+</p>
+</div>
+</div></main><footer class="footer"><div class="container"><p>&copy; 2026 Meine Webseite</p><a href="index.html">Startseite</a>
+|
+<a href="impressum.html">Impressum</a>
+
+</div></footer><script>
+
+document
+.querySelectorAll(".faq-question")
+.forEach(button => {
+
+button.addEventListener("click", () => {
+
+const item =
+button.parentElement;
+
+item.classList.toggle("active");
+
+});
+
+});
+
+</script></body>
+</html>
